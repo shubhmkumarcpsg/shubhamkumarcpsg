@@ -1,0 +1,48 @@
+<asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="false">
+    <Columns>
+            <asp:BoundField DataField="Title" HeaderText="Title" />  
+          <asp:BoundField DataField="Name" HeaderText="Name" /> 
+                <asp:BoundField DataField="Amount0" HeaderText="Amount0" />  
+
+        <asp:BoundField DataField="DOB0" HeaderText="DOB0" />  
+                <asp:BoundField DataField="Address0" HeaderText="Address0" />  
+
+       
+      
+    </Columns>
+
+
+</asp:GridView>
+<asp:Button ID="Button1" runat="server" Text="Get all item" OnClick="Button1_Click" />
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+using System;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using Microsoft.SharePoint;
+
+namespace LasgeList.VisualWebPart1
+{
+    public partial class VisualWebPart1UserControl : UserControl
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            using(SPSite site=new SPSite("http://elearning/"))
+            {
+                using(SPWeb web = site.OpenWeb())
+                {
+                    SPList list = web.Lists["Request"];
+                    SPListItemCollection items = list.Items;
+                    GridView2.DataSource = items.GetDataTable();
+                    GridView2.DataBind();
+                }
+            }
+
+        }
+    }
+}
