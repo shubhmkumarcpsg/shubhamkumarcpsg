@@ -43,3 +43,9 @@ namespace people.VisualWebPart1
         }
     }
 }
+
+
+/////////////////////////////////////////////////
+
+<asp:DropDownList ID="DropDownList1" runat="server"></asp:DropDownList>
+<asp:Button ID="Button1" runat="server" Text="Button" OnClick="Button1_Click" />
