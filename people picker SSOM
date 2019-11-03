@@ -1,0 +1,45 @@
+using System;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using Microsoft.SharePoint;
+using System.Collections.Generic;
+
+namespace people.VisualWebPart1
+{
+    public partial class VisualWebPart1UserControl : UserControl
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (SPSite site = new SPSite(SPContext.Current.Web.Url))
+                {
+                    using (SPWeb web = site.OpenWeb())
+                    {
+                        SPListItemCollection items = web.Lists["Approver"].Items;
+                        List<string> usersname = new List<string>();
+                        foreach(SPListItem item in items)
+                        {
+                            SPFieldUserValue fieldUser = new SPFieldUserValue(web, item["Approver"].ToString());
+                            usersname.Add(fieldUser.User.Name);
+                        }
+
+                        DropDownList1.DataSource = usersname;
+                        DropDownList1.DataBind();
+                       
+
+                    }
+                }
+            }
+            catch(SPException ex)
+            {
+                throw ex;
+            }
+        }
+    }
+}
