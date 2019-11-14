@@ -1,0 +1,50 @@
+<asp:DropDownList ID="ddlCountry" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlCountry_SelectedIndexChanged">
+</asp:DropDownList>
+<p>
+    &nbsp;</p>
+<asp:DropDownList ID="ddlState" runat="server">
+</asp:DropDownList>
+
+
+
+ protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+                BindCountryDropDown();
+        }
+
+        public void BindCountryDropDown()
+        {
+            using (SPSite site = new SPSite(SPContext.Current.Site.Url))
+            {
+                using (SPWeb web = site.OpenWeb())
+                {
+                    SPList list = web.Lists["Country"];
+                    DataTable dt = list.Items.GetDataTable();
+                    ddlCountry.DataSource = dt;
+                    ddlCountry.DataTextField = "Title";
+                    ddlCountry.DataValueField = "Title";
+                    ddlCountry.DataBind();
+                }
+            }
+        }
+
+
+        protected void ddlCountry_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindStateFromCountry(ddlCountry.SelectedValue);
+        }
+        public void BindStateFromCountry(string Country)
+        {
+            System.Data.DataTable dtResult = new DataTable();
+            SPQuery query = new SPQuery();
+            SPList listState = SPContext.Current.Web.Lists["CITY"];
+            string strQuery = "<Where><Eq><FieldRef Name='Country' /><Value Type='Text'>" + Country + "</Value></Eq></Where>";
+            query.Query = strQuery;
+            dtResult = listState.GetItems(query).GetDataTable();
+            ddlState.DataSource = dtResult;
+            ddlState.DataTextField = "Title";
+            ddlState.DataValueField = "Title";
+            ddlState.DataBind();
+        }
+    }
