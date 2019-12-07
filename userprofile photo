@@ -1,0 +1,70 @@
+    <div id="KeyContactsContainer" class="carousel slide wt-keycontacts" data-ride="carousel">
+        <span>Key Contacts</span>
+        <div id="Key_Contacts" class="carousel-inner">
+
+        </div>
+        <!-- Carousel controls -->
+        <a class="carousel-control wt-left-carousel-control" href="#KeyContactsContainer" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="carousel-control wt-right-carousel-control" href="#KeyContactsContainer" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            var i = 0;
+            var ListUrl = _spPageContextInfo.siteAbsoluteUrl+ "/_api/web/lists/getbytitle('Key Contacts')/items";
+            var Select = "?$select=Contact/FirstName,Contact/LastName,Contact/JobTitle,Contact/WorkPhone,Contact/EMail,Contact/UserName&$expand=Contact";
+            /*var Sort = "&$orderby=Contact asc";
+            var Filter = "&$filter=ContentType eq 'Key Contact'";
+            var Query = Select + Sort + Filter;*/
+            $.ajax({
+                url: ListUrl + Select ,
+                method: "GET",
+                headers: { "Accept": "application/json; odata=verbose" },
+                success: function (data) {
+                    if (data.d != undefined) {
+                        var KeyContactsHTML = "";
+
+                        $.each(data.d.results, function (index, item) {
+
+                            $("#KeyContactsContainer").show();
+                            var FirstName = item.Contact.FirstName;
+                            var LastName = item.Contact.LastName;
+                            var JobTitle = item.Contact.JobTitle || "";
+                            var WorkPhone = item.Contact.WorkPhone || "";
+                            var EMail = item.Contact.EMail;
+                            var UserName = item.Contact.UserName;
+                            UserName = UserName.split("@")[0];
+                            var ImgSrc = document.location.origin + "/_layouts/15/userphoto.aspx?size=s&accountname="+ EMail
+
+                            ImgSrc = ImgSrc.replace("UserName", UserName);
+
+                            KeyContactsHTML = "<div class='item" + (i == 0 ? " active" : "") + "'>"
+                                + "<img src='" + ImgSrc + "' class='img-circle wt-keycontacts-image' style='min-height: 100px;'>"
+                                + "<div class='wt-keycontacts-text'>"
+                                + "<div class='wt-keycontacts-text-name'>" + FirstName + "  " + LastName + "</div>"
+                                + "<div class='wt-keycontacts-text-title'>" + JobTitle + "</div>"
+                                + "<div class='wt-email'>" + EMail + "</div>"
+                                + "<div class='wt-phone' style='padding-left: 20px;'>" + WorkPhone + "</div>"
+                                + "</div ></div > ";
+
+                            $("#Key_Contacts").append(KeyContactsHTML);
+
+                            //increase count until .each is done.
+                            i++;
+                        });
+
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert("POST error:\n" + xhr.status + "\n" + thrownError);
+                }
+            });
+
+        });
+
+    </script>
