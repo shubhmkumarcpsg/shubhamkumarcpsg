@@ -1,0 +1,71 @@
+file.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.SharePoint;
+using Newtonsoft.Json;
+
+namespace Get
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using (SPSite site = new SPSite("http://elearning/"))
+            {
+                using (SPWeb web = site.OpenWeb())
+                {
+                    SPList list = web.Lists["CITY"];
+                    SPListItemCollection items = list.Items;
+
+                    foreach (SPListItem item in items)
+                    {
+                        if(item["Emp"] != null)
+                        {
+                            List<Employee> employees = JsonConvert.DeserializeObject<List<Employee>>(Convert.ToString(item["Emp"]));
+                            foreach (Employee employee in employees)
+                            {
+                                Console.WriteLine(Convert.ToString(employee.name));
+                                Console.WriteLine(Convert.ToString(employee.age));
+                                Console.WriteLine(Convert.ToString(employee.email));
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+                }
+            }
+                
+        }
+    }
+}
+
+
+
+
+///////////////////////////////
+
+class.cs
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Get
+{
+    public class Employee
+    {
+        public string name { get; set; }
+        public string email { get; set; }
+        public int age { get; set; }
+    }
+}
+//////////////////
+
+
